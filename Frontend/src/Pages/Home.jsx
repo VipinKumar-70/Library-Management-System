@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="text-gray-800">
       {/* HERO */}
-      <section className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+      <section className="bg-linear-to-r from-indigo-600 to-purple-600 text-white">
         <div className="max-w-7xl mx-auto px-4 py-32 grid md:grid-cols-2 gap-10 items-center">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
