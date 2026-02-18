@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { registerUser, loginUser } from "../api";
+import { registerUser } from "../api";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "",
+    username: "",
     course: "",
     enrollment: "",
     school: "",
@@ -21,6 +23,21 @@ const Register = () => {
     const response = await registerUser(form);
 
     console.log(response); // later yahin API call hogi
+    console.log(response.success); // later yahin API call hogi
+
+    if (response.success) {
+      alert("User created successfully.");
+      setForm({
+        username: "",
+        course: "",
+        enrollment: "",
+        school: "",
+        email: "",
+        password: "",
+      });
+
+      navigate("/login");
+    }
   };
 
   return (
@@ -52,23 +69,35 @@ const Register = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
-              name="name"
+              name="username"
+              value={form.username}
               placeholder="Full Name"
               className="input"
               onChange={handleChange}
               required
             />
 
-            <input
+            <select
               name="course"
-              placeholder="Course"
+              value={form.course}
               className="input"
               onChange={handleChange}
               required
-            />
+            >
+              {["Select Course", "BCA", "MCA", "B.Tech", "BBA", "B.com"].map(
+                (item, index) => {
+                  return (
+                    <option key={index} value={item}>
+                      {item}
+                    </option>
+                  );
+                },
+              )}
+            </select>
 
             <input
               name="enrollment"
+              value={form.enrollment}
               placeholder="Enrollment Number"
               className="input"
               onChange={handleChange}
@@ -77,17 +106,23 @@ const Register = () => {
 
             <select
               name="school"
+              value={form.school}
               className="input"
               onChange={handleChange}
               required
             >
-              <option value="">Select School</option>
-              <option value="SOET">SOET</option>
-              <option value="SSGT">SSGT</option>
+              {["Select School", "SOET", "SSGT", "GCPA"].map((item, index) => {
+                return (
+                  <option key={index} value={item}>
+                    {item}
+                  </option>
+                );
+              })}
             </select>
 
             <input
               name="email"
+              value={form.email}
               type="email"
               placeholder="Email Address"
               className="input"
@@ -97,6 +132,7 @@ const Register = () => {
 
             <input
               name="password"
+              value={form.password}
               type="password"
               placeholder="Password"
               className="input"
