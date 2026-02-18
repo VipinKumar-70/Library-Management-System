@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function Home() {
+const Home = () => {
   return (
     <div className="text-gray-800">
       {/* HERO */}
@@ -108,4 +108,6 @@ export default function Home() {
       </section>
     </div>
   );
-}
+};
+
+export default Home;
