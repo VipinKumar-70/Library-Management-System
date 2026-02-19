@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [form, setForm] = useState({
     username: "",
     course: "",
@@ -19,14 +21,30 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!passwordRegex.test(form.password)) {
+      setError("Password must be 8+ chars with uppercase, number & symbol");
+      return;
+    }
 
     const response = await registerUser(form);
 
     console.log(response); // later yahin API call hogi
     console.log(response.success); // later yahin API call hogi
 
+    if (!response.success) {
+      setError(response.message);
+      return;
+    }
+
+    setSuccess("Account created successfully.");
+
     if (response.success) {
-      alert("User created successfully.");
       setForm({
         username: "",
         course: "",
@@ -66,6 +84,18 @@ const Register = () => {
           <p className="text-gray-500 mb-6 text-sm">
             Create your library account
           </p>
+
+          {error && (
+            <p className="bg-red-100 text-red-700 p-2 rounded mb-3 text-sm">
+              {error}
+            </p>
+          )}
+
+          {success && (
+            <p className="bg-green-100 text-green-700 p-2 rounded mb-3 text-sm">
+              {success}
+            </p>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <input

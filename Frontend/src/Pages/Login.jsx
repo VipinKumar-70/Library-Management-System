@@ -13,9 +13,8 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(form); // later API call
+    console.log(form);
   };
-
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-600 to-purple-600 flex items-center justify-center px-4">
       <div className="grid md:grid-cols-2 bg-white rounded-2xl shadow-xl overflow-hidden max-w-5xl w-full">
