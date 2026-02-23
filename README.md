@@ -91,3 +91,16 @@ npm start
   - At least one special character
 - Duplicate email or enrollment is blocked
 - Passwords stored hashed in MongoDB
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request with your changes. Make sure to follow the standard coding conventions and best practices.
+
+## 📜 License
+
+This project is licensed under the MIT License. See the LICENSE file for details. [MIT License](LICENSE)
+
+## 📩 Contact
+
+If you have any questions or need further assistance, please don't hesitate to contact me at  
+[Vipin Kumar](mailto:vipin70kr@gmail.com). I'll be happy to help!
