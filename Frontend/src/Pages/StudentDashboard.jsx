@@ -1,8 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { logoutUser } from "../api";
+import { useNavigate } from "react-router";
 
 const StudentDashboard = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("dashboard");
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/profile", {
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          navigate("/login");
+          return;
+        }
+
+        const data = await res.json();
+        setUser(data);
+      } catch (error) {
+        navigate("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [navigate]);
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/login");
+  };
+
+  if (loading) return <div className="p-6">Loading...</div>;
 
   return (
     <div className="min-h-screen flex bg-gray-100">
@@ -18,17 +54,16 @@ const StudentDashboard = () => {
 
         <nav className="p-4 space-y-2 text-base font-medium">
           <Menu label="Dashboard" active={active} setActive={setActive} />
-
           <Menu label="Books" active={active} setActive={setActive} />
-
           <Menu label="Borrowed" active={active} setActive={setActive} />
-
           <Menu label="Fines" active={active} setActive={setActive} />
-
           <Menu label="Profile" active={active} setActive={setActive} />
 
           <div className="pt-10">
-            <button className="w-full text-left px-4 py-2 rounded hover:bg-red-500">
+            <button
+              onClick={handleLogout}
+              className="w-full text-left px-4 py-2 rounded hover:bg-red-500"
+            >
               Logout
             </button>
           </div>
@@ -45,20 +80,16 @@ const StudentDashboard = () => {
 
           <h3 className="text-lg font-semibold capitalize">{active}</h3>
 
-          <div className="font-medium text-gray-600">Student</div>
+          <div className="font-medium text-gray-600">{user?.username}</div>
         </header>
 
         {/* CONTENT */}
         <main className="p-6">
           {active === "dashboard" && <Dashboard />}
-
           {active === "books" && <Books />}
-
           {active === "borrowed" && <Borrowed />}
-
           {active === "fines" && <Fines />}
-
-          {active === "profile" && <Profile />}
+          {active === "profile" && <Profile user={user} />}
         </main>
       </div>
     </div>
@@ -100,8 +131,30 @@ const Borrowed = () => (
 
 const Fines = () => <Section title="Fines">No pending fines 🎉</Section>;
 
-const Profile = () => (
-  <Section title="My Profile">Student profile info.</Section>
+const Profile = ({ user }) => (
+  <Section title="My Profile">
+    {user ? (
+      <div className="space-y-2">
+        <p>
+          <strong>Name:</strong> {user.username}
+        </p>
+        <p>
+          <strong>Email:</strong> {user.email}
+        </p>
+        <p>
+          <strong>Course:</strong> {user.course}
+        </p>
+        <p>
+          <strong>Enrollment:</strong> {user.enrollment}
+        </p>
+        <p>
+          <strong>School:</strong> {user.school}
+        </p>
+      </div>
+    ) : (
+      "No user data"
+    )}
+  </Section>
 );
 
 const Card = ({ title, value }) => (
