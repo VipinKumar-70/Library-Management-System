@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { loginUser } from "../api";
+import { useNavigate } from "react-router";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -10,10 +13,19 @@ const Login = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(form);
+    try {
+      const response = await loginUser(form);
+
+      if (response.success) {
+        alert("Login successful!");
+        navigate("/student/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-600 to-purple-600 flex items-center justify-center px-4">
@@ -60,13 +72,16 @@ const Login = () => {
               required
             />
 
-            <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium transition">
+            <button
+              type="submit"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium transition"
+            >
               Login
             </button>
           </form>
 
           <p className="text-sm text-gray-500 mt-4 text-center">
-            Forgot password? Contact library admin.
+            Forgot password?{" "}
           </p>
         </div>
       </div>
