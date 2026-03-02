@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { logoutUser } from "../api";
 import { useNavigate } from "react-router";
+import { logoutUser } from "../api/authApi";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
@@ -16,10 +16,10 @@ const StudentDashboard = () => {
           credentials: "include",
         });
 
-        if (!res.ok) {
-          navigate("/login");
-          return;
-        }
+        // if (!res.ok) {
+        //   navigate("/login");
+        //   return;
+        // }
 
         const data = await res.json();
         setUser(data);
