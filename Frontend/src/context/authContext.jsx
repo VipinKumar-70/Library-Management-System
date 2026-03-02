@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-
+import { userProfile } from "../api";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -10,9 +10,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/profile", {
-          credentials: "include",
-        });
+        const res = await userProfile();
 
         if (res.ok) {
           const data = await res.json();

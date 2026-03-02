@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { logoutUser } from "../api/authApi";
+import { logoutUser } from "../api/index";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
