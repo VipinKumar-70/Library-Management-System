@@ -8,6 +8,7 @@ import Login from "./Pages/Login";
 import StudentDashboard from "./Pages/StudentDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/authContext";
+import PageNotFound from "./Pages/PageNotFound";
 
 function App() {
   const location = useLocation();
@@ -32,6 +33,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
 
         <Footer />
