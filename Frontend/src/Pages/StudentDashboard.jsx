@@ -1,40 +1,18 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../api/index";
+import { useAuth } from "../context/authContext";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
+  const { user, loading, setUser } = useAuth();
+
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("dashboard");
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/api/profile", {
-          credentials: "include",
-        });
-
-        // if (!res.ok) {
-        //   navigate("/login");
-        //   return;
-        // }
-
-        const data = await res.json();
-        setUser(data);
-      } catch (error) {
-        navigate("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, [navigate]);
 
   const handleLogout = async () => {
     await logoutUser();
+    setUser(null);
     navigate("/login");
   };
 

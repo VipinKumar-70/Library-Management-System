@@ -1,28 +1,22 @@
-import { createContext, useState, useEffect } from "react";
-import { userProfile } from "../api";
-export const AuthContext = createContext();
+import { createContext, useContext, useEffect, useState } from "react";
+import { userProfile } from "../api/userApi";
+
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // App load hone par user check karega
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const res = await userProfile();
-
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data);
-        } else {
-          setUser(null);
-        }
+        const data = await userProfile();
+        setUser(data);
       } catch (error) {
         setUser(null);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     checkUser();
@@ -34,3 +28,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);

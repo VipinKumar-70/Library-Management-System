@@ -6,6 +6,8 @@ import Home from "./Pages/Home";
 import Register from "./Pages/Register";
 import Login from "./Pages/Login";
 import StudentDashboard from "./Pages/StudentDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/authContext";
 
 function App() {
   const location = useLocation();
@@ -15,17 +17,25 @@ function App() {
 
   return (
     <>
-      {!hideNavbar && <Navbar />}
+      <AuthProvider>
+        {!hideNavbar && <Navbar />}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+          <Route
+            path="/student/dashboard"
+            element={
+              <ProtectedRoute>
+                <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
 
-        <Route path="/student/dashboard" element={<StudentDashboard />} />
-      </Routes>
-
-      <Footer />
+        <Footer />
+      </AuthProvider>
     </>
   );
 }
