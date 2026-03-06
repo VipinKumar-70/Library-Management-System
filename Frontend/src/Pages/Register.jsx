@@ -34,8 +34,8 @@ const Register = () => {
 
     const response = await registerUser(form);
 
-    console.log(response); // later yahin API call hogi
-    console.log(response.success); // later yahin API call hogi
+    console.log(response);
+    console.log(response.success);
 
     if (!response.success) {
       setError(response.message);
