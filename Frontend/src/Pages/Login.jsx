@@ -1,13 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { loginUser } from "../api/index";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { checkUser, user } = useAuth();
+
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (user) {
+      navigate("/student/dashboard", { replace: true });
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -20,8 +29,8 @@ const Login = () => {
       const response = await loginUser(form);
 
       if (response.success) {
-        alert("Login successful!");
-        navigate("/student/dashboard");
+        await checkUser();
+        navigate("/student/dashboard", { replace: true });
       }
     } catch (error) {
       console.log(error);
