@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logoutUser } from "../api";
-import { useAuth } from "../context/authContext";
+import { logoutUser } from "../../../api";
+import { useAuth } from "../../../context/authContext";
 
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
-import DashboardSection from "../sections/DashboardSection";
-import BooksSection from "../sections/BooksSection";
-import BorrowedSection from "../sections/BorrowedSection";
-import FinesSection from "../sections/FinesSection";
-import ProfileSection from "../sections/ProfileSection";
+import DashboardSection from "../components/DashboardSection";
+import BooksSection from "../components/BooksSection";
+import BorrowedSection from "../components/BorrowedSection";
+import FinesSection from "../components/FinesSection";
+import ProfileSection from "../components/ProfileSection";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();

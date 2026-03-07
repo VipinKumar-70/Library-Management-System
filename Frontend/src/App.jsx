@@ -5,7 +5,7 @@ import Footer from "./components/Footer";
 import Home from "./Pages/Home";
 import Register from "./Pages/Register";
 import Login from "./Pages/Login";
-import StudentDashboard from "./Pages/StudentDashboard";
+import StudentDashboard from "./features/student/pages/StudentDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/authContext";
 import PageNotFound from "./Pages/PageNotFound";

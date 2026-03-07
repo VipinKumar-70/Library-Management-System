@@ -1,5 +1,5 @@
-import StatsCard from "../components/StatsCard";
-import TaskCard from "../components/TaskCard";
+import StatsCard from "./StatsCard";
+import TaskCard from "./TaskCard";
 
 const DashboardSection = () => {
   return (
