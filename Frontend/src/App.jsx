@@ -9,12 +9,15 @@ import StudentDashboard from "./features/student/pages/StudentDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/authContext";
 import PageNotFound from "./Pages/PageNotFound";
+import AdminLogin from "./Pages/AdminLogin";
 
 function App() {
   const location = useLocation();
 
   // Hide navbar on student dashboard
-  const hideNavbar = location.pathname.startsWith("/student");
+  const hideNavbar =
+    location.pathname.startsWith("/student") ||
+    location.pathname.startsWith("/admin");
 
   return (
     <>
@@ -33,6 +36,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
 
