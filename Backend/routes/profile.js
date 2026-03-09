@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const userModel = require("../Models/user");
+const userModel = require("../Models/User");
 const protecRoute = require("../Middleware/authmiddleware");
 
 router.get("/profile", protecRoute, async (req, res) => {
