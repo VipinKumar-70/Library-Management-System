@@ -3,8 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const connectDB = require("./config/db");
 const cors = require("cors");
-const authRoute = require("./routes/authRoute");
-const profile = require("./routes/profile");
+const authRoute = require("./routes/AuthRoute");
+const profile = require("./routes/StudentProfile");
 const cookieParser = require("cookie-parser");
 
 const app = express();

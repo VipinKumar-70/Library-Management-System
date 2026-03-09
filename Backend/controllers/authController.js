@@ -71,7 +71,7 @@ login = async (req, res) => {
 
       if (result) {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRETKEY);
-        res.cookie("token", token, {
+        res.cookie("userToken", token, {
           httpOnly: true,
           secure: false,
           sameSite: "lax",
@@ -90,7 +90,7 @@ login = async (req, res) => {
 };
 
 logout = async (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("userToken");
   res.json({ message: "Logged out successfully " });
 };
 
