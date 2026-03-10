@@ -2,7 +2,32 @@ const adminModel = require("../Models/Admin");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-login = async (req, res) => {
+const register = async (req, res) => {
+  const admin = {
+    email: process.env.ADMIN_EMAIL,
+    password: process.env.ADMIN_PASSWORD,
+  };
+  try {
+    bcrypt.genSalt(10, function (err, salt) {
+      bcrypt.hash(admin.password, salt, async function (err, hash) {
+        const DefaultAdmin = await adminModel.create({
+          email: admin.email,
+          password: hash,
+        });
+
+        console.log(DefaultAdmin);
+        res.json({
+          success: true,
+          message: "User Registered successfully.",
+        });
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const admin = await adminModel.findOne({ email });
@@ -41,9 +66,9 @@ login = async (req, res) => {
   }
 };
 
-logout = async (req, res) => {
+const logout = async (req, res) => {
   res.clearCookie("adminToken");
   res.json({ message: "Logged out successfully " });
 };
 
-module.exports = { login, logout };
+module.exports = { register, login, logout };
