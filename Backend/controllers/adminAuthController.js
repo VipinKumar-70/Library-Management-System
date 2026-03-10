@@ -18,7 +18,7 @@ const register = async (req, res) => {
         console.log(DefaultAdmin);
         res.json({
           success: true,
-          message: "User Registered successfully.",
+          message: "Admin Created successfully.",
         });
       });
     });
