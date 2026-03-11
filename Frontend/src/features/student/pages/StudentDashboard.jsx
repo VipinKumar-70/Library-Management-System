@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../../api";
-import { useAuth } from "../../../context/authContext";
+import { useAuth } from "../../../context/AuthContext";
 
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";

@@ -1,12 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginAdmin } from "../api/index";
+import { useAdminAuth } from "../context/adminAuthContext";
 
 const AdminLogin = () => {
+  const navigate = useNavigate();
+  const { checkAdmin, admin } = useAdminAuth();
+
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
-  const navigate = useNavigate("");
+
+  useEffect(() => {
+    if (admin) {
+      navigate("/admin/dashboard", { replace: true });
+    }
+  }, [admin]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -14,6 +24,17 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await loginAdmin(form);
+
+      if (response.success) {
+        await checkAdmin();
+        navigate("/admin/dashboard", { replace: true });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

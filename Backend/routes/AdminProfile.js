@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const adminModel = require("../Models/Admin");
-// const protectAdminRoute = require("../Middleware/AdminMiddleware");
+const protectAdminRoute = require("../Middleware/AdminMiddleware");
 
-router.get("/profile", async (req, res) => {
+router.get("/profile", protectAdminRoute, async (req, res) => {
   try {
     const admin = await adminModel.findById(req.admin.id).select("-password");
 
