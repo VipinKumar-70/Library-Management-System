@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
 const userModel = require("../Models/User");
-const protecRoute = require("../Middleware/AuthMiddleware");
+const protectRoute = require("../Middleware/AuthMiddleware");
 
-router.get("/profile", protecRoute, async (req, res) => {
+router.get("/profile", protectRoute, async (req, res) => {
   try {
     const user = await userModel.findById(req.user.id).select("-password");
 

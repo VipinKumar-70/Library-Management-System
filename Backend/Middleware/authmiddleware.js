@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const protecRoute = (req, res, next) => {
+const protectRoute = (req, res, next) => {
   try {
     const token = req.cookies.userToken;
     if (!token) return res.status(401).json({ message: "Unauthorized" });
@@ -12,4 +12,4 @@ const protecRoute = (req, res, next) => {
   }
 };
 
-module.exports = protecRoute;
+module.exports = protectRoute;

@@ -4,6 +4,7 @@ const express = require("express");
 const connectDB = require("./config/db");
 const cors = require("cors");
 const authRoute = require("./routes/AuthRoute");
+const adminProfile = require("./routes/AdminProfile");
 const adminRoute = require("./routes/adminRoute");
 const profile = require("./routes/StudentProfile");
 const cookieParser = require("cookie-parser");
@@ -25,6 +26,7 @@ connectDB();
 app.use("/api", authRoute);
 app.use("/api", profile);
 app.use("/admin", adminRoute);
+app.use("/admin", adminProfile);
 
 app.get("/api/test", (req, res) => {
   res.json({ message: "Backend connected" });
