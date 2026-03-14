@@ -11,4 +11,4 @@ export const adminProfile = async () => {
   }
 
   return res.json();
-};
+};  
