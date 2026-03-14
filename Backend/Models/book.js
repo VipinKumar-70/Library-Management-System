@@ -44,7 +44,7 @@ const bookschema = mongoose.Schema(
       default: "physical",
     },
   },
-  { timestaps: true },
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Book", bookschema);
