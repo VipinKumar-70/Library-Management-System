@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import MainLayout from "./Pages/MainLayout";
 import Home from "./Pages/Home";
@@ -11,6 +11,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { AdminAuthProvider } from "./context/adminAuthContext";
 import PageNotFound from "./Pages/PageNotFound";
 import AdminLogin from "./Pages/AdminLogin";
+import ProtectAdmin from "./components/ProtectAdmin";
 
 function App() {
   return (
@@ -38,9 +39,9 @@ function App() {
             <Route
               path="/admin/dashboard"
               element={
-                <ProtectedRoute>
+                <ProtectAdmin>
                   <AdminDashboard />
-                </ProtectedRoute>
+                </ProtectAdmin>
               }
             />
 
