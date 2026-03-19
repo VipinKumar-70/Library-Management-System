@@ -35,7 +35,7 @@ const addBook = async (req, res) => {
     res.status(201).json(book);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ messaage: "server error" });
+    res.status(500).json({ message: "server error" });
   }
 };
 

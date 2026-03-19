@@ -7,12 +7,14 @@ const authRoute = require("./routes/AuthRoute");
 const adminProfile = require("./routes/AdminProfile");
 const adminRoute = require("./routes/adminRoute");
 const profile = require("./routes/StudentProfile");
+const uploadbook = require("./routes/BookRoute");
 const cookieParser = require("cookie-parser");
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static("public"));
 app.use(cookieParser());
 app.use(
   cors({
@@ -28,6 +30,7 @@ const startServer = async () => {
     app.use("/api", profile);
     app.use("/admin", adminRoute);
     app.use("/admin", adminProfile);
+    app.use("/books", uploadbook);
 
     app.get("/api/test", (req, res) => {
       res.json({ message: "Backend connected" });
