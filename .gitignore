@@ -1,3 +1,22 @@
 Backend/.env
 Frontend/.env
 Notes.txt
+
+# dependencies
+node_modules/
+
+# env files
+.env
+.env.*
+
+# build files
+dist/
+build/
+
+# logs
+logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
