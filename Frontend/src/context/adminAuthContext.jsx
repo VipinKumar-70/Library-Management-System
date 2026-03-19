@@ -1,6 +1,6 @@
 import React from "react";
 import { useContext, createContext, useEffect, useState } from "react";
-import { adminProfile } from "../api/adminApi";
+import { adminProfile } from "../api/admin/adminApi";
 
 const AdminAuthContext = createContext();
 

@@ -9,46 +9,59 @@ import AdminDashboard from "./features/admin/pages/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { AdminAuthProvider } from "./context/adminAuthContext";
+import { BookProvider } from "./context/BookContext";
 import PageNotFound from "./Pages/PageNotFound";
 import AdminLogin from "./Pages/AdminLogin";
 import ProtectAdmin from "./components/ProtectAdmin";
+import ManageBooks from "./features/admin/components/ManageBooks ";
 
 function App() {
   return (
     <>
       <AuthProvider>
         <AdminAuthProvider>
-          <Routes>
-            {/* Pages with Navbar + Footer */}
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/login" element={<Login />} />
-            </Route>
+          <BookProvider>
+            <Routes>
+              {/* Pages with Navbar + Footer */}
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+              </Route>
 
-            {/* Pages without Navbar/Footer */}
-            <Route
-              path="/student/dashboard"
-              element={
-                <ProtectedRoute>
-                  <StudentDashboard />
-                </ProtectedRoute>
-              }
-            />
+              {/* Pages without Navbar/Footer */}
+              <Route
+                path="/student/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <StudentDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/admin/dashboard"
-              element={
-                <ProtectAdmin>
-                  <AdminDashboard />
-                </ProtectAdmin>
-              }
-            />
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectAdmin>
+                    <AdminDashboard />
+                  </ProtectAdmin>
+                }
+              />
 
-            <Route path="/admin/login" element={<AdminLogin />} />
+              <Route
+                path="/admin/manage-books"
+                element={
+                  <ProtectAdmin>
+                    <ManageBooks />
+                  </ProtectAdmin>
+                }
+              />
 
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
+              <Route path="/admin/login" element={<AdminLogin />} />
+
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </BookProvider>
         </AdminAuthProvider>
       </AuthProvider>
     </>

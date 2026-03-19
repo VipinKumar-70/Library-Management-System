@@ -1,7 +1,7 @@
-import { registerUser, loginUser, logoutUser } from "./authApi";
-import { userProfile } from "./userApi";
-import { adminProfile } from "./adminApi";
-import { loginAdmin, logoutAdmin } from "./authAdmin";
+import { registerUser, loginUser, logoutUser } from "./user/authApi";
+import { userProfile } from "./user/userApi";
+import { adminProfile } from "./admin/adminApi";
+import { loginAdmin, logoutAdmin } from "./admin/authAdmin";
 
 export {
   registerUser,
