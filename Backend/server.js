@@ -21,17 +21,25 @@ app.use(
   }),
 );
 
-connectDB();
+const startServer = async () => {
+  try {
+    connectDB();
+    app.use("/api", authRoute);
+    app.use("/api", profile);
+    app.use("/admin", adminRoute);
+    app.use("/admin", adminProfile);
 
-app.use("/api", authRoute);
-app.use("/api", profile);
-app.use("/admin", adminRoute);
-app.use("/admin", adminProfile);
+    app.get("/api/test", (req, res) => {
+      res.json({ message: "Backend connected" });
+    });
 
-app.get("/api/test", (req, res) => {
-  res.json({ message: "Backend connected" });
-});
+    app.listen(process.env.PORT || 3000, () => {
+      console.log(`Server is running on port ${process.env.PORT}`);
+    });
+  } catch (error) {
+    console.error("Server failed to start:", error);
+    process.exit(1);
+  }
+};
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
-});
+startServer();

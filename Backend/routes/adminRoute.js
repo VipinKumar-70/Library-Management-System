@@ -4,7 +4,7 @@ const {
   register,
   login,
   logout,
-} = require("../controllers/adminAuthController");
+} = require("../controllers/adminAuth");
 
 router.get("/register", register);
 
