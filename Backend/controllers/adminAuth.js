@@ -3,11 +3,19 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const register = async (req, res) => {
+  // its help creating user first time to mongoDB database
   const admin = {
     email: process.env.ADMIN_EMAIL,
     password: process.env.ADMIN_PASSWORD,
   };
   try {
+    const existingAdmin = await adminModel.findOne({ email });
+    if (existingAdmin) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists." });
+    }
+
     bcrypt.genSalt(10, function (err, salt) {
       bcrypt.hash(admin.password, salt, async function (err, hash) {
         const DefaultAdmin = await adminModel.create({
