@@ -2,6 +2,9 @@ Backend/.env
 Frontend/.env
 Notes.txt
 
+Backend/node_modules
+Frontend/node_modules
+
 # dependencies
 node_modules/
 
