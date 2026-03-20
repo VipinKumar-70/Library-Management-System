@@ -25,7 +25,7 @@ app.use(
 
 const startServer = async () => {
   try {
-    connectDB();
+    await connectDB();
     app.use("/api", authRoute);
     app.use("/api", profile);
     app.use("/admin", adminRoute);

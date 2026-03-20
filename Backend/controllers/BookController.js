@@ -2,32 +2,45 @@ const bookModel = require("../Models/book");
 
 const addBook = async (req, res) => {
   try {
-    const {
-      title,
-      author,
-      category,
-      description,
-      totalCopies,
-      bookType,
-      coverImage,
-    } = req.body;
+    const { title, author, category, description, totalCopies, bookType } =
+      req.body;
 
-    let pdfUrl = null;
-    if (req.file) {
-      pdfUrl = `/uploads/books/${req.file.filename}`;
+    if (!title || !author || !category || !description) {
+      return res.status(400).json({ message: "All fields required" });
     }
 
-    const availableCopies = bookType === "digital" ? 0 : totalCopies;
+    const total = totalCopies || 0;
+    const availableCopies = bookType === "digital" ? 0 : total;
+
+    if (bookType === "digital" || bookType === "both") {
+      if (!req.files?.bookFile) {
+        return res
+          .status(400)
+          .json({ message: "PDF required for digital books" });
+      }
+    }
+
+    let pdfUrl = null;
+    let coverImageUrl = null;
+    // PDF path
+    if (req.files?.bookFile) {
+      pdfUrl = `/uploads/books/${req.files.bookFile[0].filename}`;
+    }
+
+    // IMAGE path
+    if (req.files?.coverImage) {
+      coverImageUrl = `/uploads/bookCover/${req.files.coverImage[0].filename}`;
+    }
 
     const book = new bookModel({
       title,
       author,
       category,
       description,
-      totalCopies,
+      totalCopies: total,
       availableCopies,
       pdfUrl,
-      coverImage,
+      coverImage: coverImageUrl,
       bookType,
     });
 
