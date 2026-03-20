@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test Book Upload</title>
+  </head>
+  <body>
+    <h1>Upload Book PDF + Cover Image</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <label>Title: </label
+      ><input type="text" name="title" value="Test Book" required /><br /><br />
+      <label>Author: </label
+      ><input type="text" name="author" value="John Doe" required /><br /><br />
+      <label>Category: </label
+      ><input
+        type="text"
+        name="category"
+        value="Fiction"
+        required
+      /><br /><br />
+      <label>Description: </label
+      ><input
+        type="text"
+        name="description"
+        value="Example Description"
+        required
+      /><br /><br />
+      <label>Total Copies: </label
+      ><input type="number" name="totalCopies" value="5" /><br /><br />
+      <label>Book Type: </label>
+      <select name="bookType">
+        <option value="physical">Physical</option>
+        <option value="digital">Digital</option>
+        <option value="both" selected>Both</option></select
+      ><br /><br />
+      <label>PDF File: </label
+      ><input
+        type="file"
+        name="bookFile"
+        accept="application/pdf"
+        required
+      /><br /><br />
+      <label>Cover Image: </label
+      ><input
+        type="file"
+        name="coverImage"
+        accept="image/*"
+        required
+      /><br /><br />
+      <button type="submit">Upload Book</button>
+    </form>
+
+    <pre id="response"></pre>
+
+    <script>
+      const form = document.getElementById("uploadForm");
+      const responseEl = document.getElementById("response");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+
+        try {
+          const res = await fetch("http://localhost:3000/books/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await res.json();
+          responseEl.textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          responseEl.textContent = "Error: " + err.message;
+        }
+      });
+    </script>
+  </body>
+</html>

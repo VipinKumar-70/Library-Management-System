@@ -1,181 +1,121 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import AddBookModal from "../components/AddBookModal";
 import { useBook } from "../../../context/BookContext";
 
-const ManageBooks = () => {
-  const { addBook, books, loading } = useBook();
-  const [formData, setFormData] = useState({
-    title: "",
-    author: "",
-    category: "",
-    description: "",
-    totalCopies: "",
-    bookType: "physical",
-    coverImage: null,
-    bookFile: null,
-  });
+export default function ManageBooks() {
+  const { books, loading, fetchBooks } = useBook();
+  const [filter, setFilter] = useState("");
+  const [isAddModalOpen, setAddModalOpen] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (files) {
-      // file input
-      setFormData((prev) => ({ ...prev, [name]: files[0] }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
+  useEffect(() => {
+    fetchBooks();
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const data = new FormData();
-    data.append("title", formData.title);
-    data.append("author", formData.author);
-    data.append("category", formData.category);
-    data.append("description", formData.description);
-    data.append("totalCopies", formData.totalCopies);
-    data.append("bookType", formData.bookType);
-    // if (formData.coverImage) data.append("coverImage", formData.coverImage);
-    if (formData.bookFile) data.append("book", formData.bookFile);
-
-    const addedBook = await addBook(data); // pass formData to context
-    if (addedBook) {
-      // reset form only if book successfully added
-      setFormData({
-        title: "",
-        author: "",
-        category: "",
-        description: "",
-        totalCopies: "",
-        bookType: "physical",
-        coverImage: null,
-        bookFile: null,
-      });
-    }
-  };
+  const filteredBooks =
+    books?.filter(
+      (book) =>
+        book.title?.toLowerCase().includes(filter.toLowerCase()) ||
+        book.author?.toLowerCase().includes(filter.toLowerCase()),
+    ) || [];
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar - same as AdminDashboard */}
-      <aside className="w-64 bg-indigo-700 text-white flex flex-col">
-        <div className="p-6 text-2xl font-bold border-b border-indigo-600">
-          SmartLibrary
-        </div>
-        <nav className="flex-1 p-6 space-y-4">
-          <button className="block w-full text-left py-2 px-3 rounded hover:bg-indigo-600 transition">
-            Dashboard
-          </button>
-          <button className="block w-full text-left py-2 px-3 rounded bg-indigo-600 transition">
-            Manage Books
-          </button>
-          {/* other sidebar buttons */}
-        </nav>
-      </aside>
+    <div className="p-6">
+      <h1 className="text-2xl font-semibold mb-4">Manage Books</h1>
+      <div className="flex justify-between mb-4">
+        <input
+          type="text"
+          placeholder="Filter books..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="border p-2 rounded w-1/3"
+        />
+        <button
+          onClick={() => setAddModalOpen(true)}
+          className="bg-indigo-600 text-white px-4 py-2 rounded"
+        >
+          + Add New Book
+        </button>
+      </div>
 
-      {/* Main Content */}
-      <main className="flex-1 p-8 flex gap-6">
-        {/* Left: Add Book Form */}
-        <section className="w-1/3 bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Add New Book</h2>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-            <input
-              name="title"
-              placeholder="Title"
-              value={formData.title}
-              onChange={handleChange}
-              className="border p-2 rounded"
-              required
-            />
-            <input
-              name="author"
-              placeholder="Author"
-              value={formData.author}
-              onChange={handleChange}
-              className="border p-2 rounded"
-              required
-            />
-            <input
-              name="category"
-              placeholder="Category"
-              value={formData.category}
-              onChange={handleChange}
-              className="border p-2 rounded"
-            />
-            <textarea
-              name="description"
-              placeholder="Description"
-              value={formData.description}
-              onChange={handleChange}
-              className="border p-2 rounded"
-            />
-            <input
-              type="number"
-              name="totalCopies"
-              placeholder="Total Copies"
-              value={formData.totalCopies}
-              onChange={handleChange}
-              className="border p-2 rounded"
-            />
-            <select
-              name="bookType"
-              value={formData.bookType}
-              onChange={handleChange}
-              className="border p-2 rounded"
-            >
-              <option value="physical">Physical</option>
-              <option value="digital">Digital</option>
-              <option value="both">Both</option>
-            </select>
-            {/* <input
-              type="file"
-              name="coverImage"
-              onChange={handleChange}
-              className="border p-2 rounded"
-            /> */}
-            <input
-              type="file"
-              name="bookFile"
-              onChange={handleChange}
-              className="border p-2 rounded"
-            />
-            <button
-              type="submit"
-              className="bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
-            >
-              {loading ? "Uploading..." : "Add Book"}
-            </button>
-          </form>
-        </section>
-
-        {/* Right: Book List */}
-        <section className="flex-1 bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Books List</h2>
-          {books.length === 0 ? (
-            <p className="text-gray-500">No books added yet.</p>
-          ) : (
-            <ul className="space-y-3 max-h-[600px] overflow-auto">
-              {books.map((book) => (
-                <li
-                  key={book._id}
-                  className="border p-3 rounded flex justify-between items-center"
-                >
-                  <span>{book.title}</span>
-                  {book.pdfUrl && (
-                    <a
-                      href={book.pdfUrl}
-                      target="_blank"
-                      className="text-indigo-600 hover:underline"
-                    >
-                      View PDF
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
+      <table className="min-w-full border">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="text-left p-2">Book</th>
+            <th className="text-left p-2">Category</th>
+            <th className="text-left p-2">Copies</th>
+            <th className="text-left p-2">Status</th>
+            <th className="text-left p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading && (
+            <tr>
+              <td colSpan="5" className="p-4 text-center">
+                Loading books...
+              </td>
+            </tr>
           )}
-        </section>
-      </main>
+
+          {!loading && filteredBooks.length === 0 && (
+            <tr>
+              <td colSpan="5" className="p-4 text-center text-gray-500">
+                No books found.
+              </td>
+            </tr>
+          )}
+
+          {!loading &&
+            filteredBooks.map((book) => (
+              <tr key={book._id} className="border-t">
+                <td className="p-2 flex items-center space-x-4">
+                  <img
+                    src={book.coverImage}
+                    alt={book.title}
+                    className="w-12 h-16 object-cover"
+                  />
+                  <div>
+                    <div className="font-semibold">{book.title}</div>
+                    <div className="text-sm text-gray-600">{book.author}</div>
+                  </div>
+                </td>
+                <td className="p-2 uppercase text-indigo-600">
+                  {book.category}
+                </td>
+                <td className="p-2">
+                  {book.availableCopies} / {book.totalCopies} <br />
+                  <span className="text-sm text-gray-500">Available</span>
+                </td>
+                <td className="p-2">
+                  <span
+                    className={`${
+                      book.availableCopies > 0
+                        ? "text-green-600"
+                        : "text-red-600"
+                    } font-semibold`}
+                  >
+                    {book.availableCopies > 0 ? "In Stock" : "Out of Stock"}
+                  </span>
+                </td>
+                <td className="p-2 space-x-2">
+                  {/* Add real functionality later */}
+                  <button className="text-blue-600 hover:underline">
+                    View
+                  </button>
+                  <button className="text-yellow-600 hover:underline">
+                    Edit
+                  </button>
+                  <button className="text-red-600 hover:underline">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+
+      {isAddModalOpen && (
+        <AddBookModal onClose={() => setAddModalOpen(false)} />
+      )}
     </div>
   );
-};
-
-export default ManageBooks;
+}

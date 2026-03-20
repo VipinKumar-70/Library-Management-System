@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
+import ManageBooks from "../components/ManageBooks ";
 import { useAdminAuth } from "../../../context/adminAuthContext";
-import { logoutAdmin } from "../../../api";
+import { logoutAdmin } from "../../../api/admin/authAdmin"; // adjust import path
 import { useNavigate } from "react-router";
 
 const DashboardCard = ({ title, value, trend, trendPositive }) => (
@@ -22,6 +23,8 @@ const DashboardCard = ({ title, value, trend, trendPositive }) => (
 const AdminDashboard = () => {
   const { admin, loading, setAdmin } = useAdminAuth();
   const navigate = useNavigate();
+
+  const [isManageBooksOpen, setManageBooksOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -58,13 +61,13 @@ const AdminDashboard = () => {
 
         <nav className="flex-1 p-6 space-y-4">
           <button
-            onClick={() => navigate("/admin/dashboard")}
+            onClick={() => setManageBooksOpen(false)}
             className="block w-full text-left py-2 px-3 rounded hover:bg-indigo-600 transition"
           >
             Dashboard
           </button>
           <button
-            onClick={() => navigate("/admin/manage-books")}
+            onClick={() => setManageBooksOpen(true)}
             className="block w-full text-left py-2 px-3 rounded hover:bg-indigo-600 transition"
           >
             Manage Books
@@ -113,56 +116,63 @@ const AdminDashboard = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 overflow-auto">
-        <h1 className="text-3xl font-bold mb-2">Dashboard Overview</h1>
-        <p className="text-gray-700 mb-8">
-          Welcome back, {admin.email}! Here's what's happening today.
-        </p>
+      <main className="flex-1 p-8 overflow-auto relative">
+        {!isManageBooksOpen && (
+          <>
+            <h1 className="text-3xl font-bold mb-2">Dashboard Overview</h1>
+            <p className="text-gray-700 mb-8">
+              Welcome back, {admin.email}! Here's what's happening today.
+            </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-          <DashboardCard
-            title="Total Books"
-            value={totalBooks}
-            trend="12%"
-            trendPositive={true}
-          />
-          <DashboardCard
-            title="Total Students"
-            value={totalStudents}
-            trend="5%"
-            trendPositive={true}
-          />
-          <DashboardCard
-            title="Books Borrowed"
-            value={booksBorrowed}
-            trend="18%"
-            trendPositive={true}
-          />
-          <DashboardCard
-            title="Active Requests"
-            value={activeRequests}
-            trend="2%"
-            trendPositive={false}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <section className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Borrow Activity</h2>
-            <div className="h-48 flex items-center justify-center text-gray-400 italic">
-              Chart Placeholder
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+              <DashboardCard
+                title="Total Books"
+                value={totalBooks}
+                trend="12%"
+                trendPositive={true}
+              />
+              <DashboardCard
+                title="Total Students"
+                value={totalStudents}
+                trend="5%"
+                trendPositive={true}
+              />
+              <DashboardCard
+                title="Books Borrowed"
+                value={booksBorrowed}
+                trend="18%"
+                trendPositive={true}
+              />
+              <DashboardCard
+                title="Active Requests"
+                value={activeRequests}
+                trend="2%"
+                trendPositive={false}
+              />
             </div>
-          </section>
 
-          <section className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">
-              Category Distribution
-            </h2>
-            <div className="h-48 flex items-center justify-center text-gray-400 italic">
-              Pie Chart Placeholder
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <section className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-xl font-semibold mb-4">Borrow Activity</h2>
+                <div className="h-48 flex items-center justify-center text-gray-400 italic">
+                  Chart Placeholder
+                </div>
+              </section>
+
+              <section className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-xl font-semibold mb-4">
+                  Category Distribution
+                </h2>
+                <div className="h-48 flex items-center justify-center text-gray-400 italic">
+                  Pie Chart Placeholder
+                </div>
+              </section>
             </div>
-          </section>
-        </div>
+          </>
+        )}
+
+        {/* Manage Books Inline */}
+        {isManageBooksOpen && <ManageBooks />}
       </main>
     </div>
   );
