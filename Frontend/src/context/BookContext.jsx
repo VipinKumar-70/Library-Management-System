@@ -1,5 +1,10 @@
-import React, { createContext, useContext, useState } from "react";
-import { fetchBooksApi, uploadBookApi } from "../api/book/uploadBook";
+import React, { createContext, useContext, useState, useCallback } from "react";
+import {
+  fetchBooksApi,
+  uploadBookApi,
+  deleteBookApi,
+  updateBookApi,
+} from "../api/book/BookApi";
 
 const BookContext = createContext();
 
@@ -7,29 +12,50 @@ export const BookProvider = ({ children }) => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch books list
-  const fetchBooks = async () => {
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // ✅ FIXED (no re-render loop)
+  const fetchBooks = useCallback(async (pageNum = 1) => {
     setLoading(true);
     try {
-      const data = await fetchBooksApi();
-      setBooks(data);
+      const data = await fetchBooksApi(pageNum);
+      setBooks(data.books || []);
+      setTotalPages(data.totalPages || 1);
+      setPage(data.currentPage || 1);
     } catch (error) {
-      console.error("Failed to fetch books:", error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  const deleteBook = async (id) => {
+    try {
+      await deleteBookApi(id);
+      fetchBooks(page);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  // Add a new book
+  const updateBook = async (id, data) => {
+    try {
+      await updateBookApi(id, data);
+      fetchBooks(page);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const addBook = async (formData) => {
     setLoading(true);
     try {
-      const newBook = await uploadBookApi(formData);
-      setBooks((prev) => [newBook, ...prev]);
-      return newBook;
-    } catch (error) {
-      console.error("Failed to add book:", error);
-      throw error;
+      await uploadBookApi(formData);
+      fetchBooks(page);
+    } catch (err) {
+      console.error(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -41,7 +67,12 @@ export const BookProvider = ({ children }) => {
         books,
         loading,
         fetchBooks,
+        deleteBook,
+        updateBook,
         addBook,
+        page,
+        totalPages,
+        setPage,
       }}
     >
       {children}

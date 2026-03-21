@@ -52,4 +52,55 @@ const addBook = async (req, res) => {
   }
 };
 
-module.exports = { addBook };
+const getBooks = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 8;
+
+    const skip = (page - 1) * limit;
+
+    // ONLY physical books for admin table
+    const query = { bookType: { $in: ["physical", "both"] } };
+
+    const books = await bookModel
+      .find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await bookModel.countDocuments(query);
+
+    res.json({
+      books,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching books" });
+  }
+};
+
+const deleteBook = async (req, res) => {
+  try {
+    await bookModel.findByIdAndDelete(req.params.id);
+    res.json({ message: "Book deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Delete failed" });
+  }
+};
+
+const updateBook = async (req, res) => {
+  try {
+    const updated = await bookModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: "Update failed" });
+  }
+};
+
+module.exports = { addBook, getBooks, deleteBook,updateBook };
