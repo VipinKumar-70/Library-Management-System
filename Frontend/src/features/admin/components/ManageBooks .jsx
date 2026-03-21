@@ -88,7 +88,7 @@ export default function ManageBooks() {
                   <td className="p-4 flex items-center gap-4">
                     <img
                       src={`${BASE_URL}${book.coverImage}`}
-                      className="w-12 h-16 rounded-md object-cover shadow"
+                      className="w-12 h-16 rounded-md object-fit shadow"
                       onError={(e) => (e.target.src = "/no-image.jpg")}
                     />
                     <div>

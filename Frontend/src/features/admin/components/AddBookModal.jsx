@@ -2,6 +2,33 @@ import React, { useState, useEffect } from "react";
 import { useBook } from "../../../context/BookContext";
 
 export default function AddBookModal({ onClose, book }) {
+  const categories = [
+    "Fiction",
+    "Non-Fiction",
+    "Science",
+    "History",
+    "Psychology",
+    "Human Behaviour",
+    "Philosophy",
+    "Self-Help",
+    "Biography",
+    "Business",
+    "Finance",
+    "Economics",
+    "Technology",
+    "Programming",
+    "Artificial Intelligence",
+    "Data Science",
+    "Health & Fitness",
+    "Education",
+    "Politics",
+    "Religion & Spirituality",
+    "Mystery",
+    "Thriller",
+    "Fantasy",
+    "Science Fiction",
+    "Poetry",
+  ];
   const { addBook, updateBook } = useBook();
 
   const [form, setForm] = useState({
@@ -93,10 +120,13 @@ export default function AddBookModal({ onClose, book }) {
               onChange={handleChange}
               className="border rounded-lg px-3 py-2"
             >
-              <option value="">Category</option>
-              <option value="fiction">Fiction</option>
-              <option value="science">Science</option>
-              <option value="history">History</option>
+              {categories.map((item, index) => {
+                return (
+                  <option key={index} value={item}>
+                    {item}
+                  </option>
+                );
+              })}
             </select>
 
             <input
@@ -126,9 +156,13 @@ export default function AddBookModal({ onClose, book }) {
             onChange={handleChange}
             className="w-full border rounded-lg px-3 py-2"
           >
-            <option value="physical">Physical</option>
-            <option value="digital">Digital</option>
-            <option value="both">Both</option>
+            {["physical", "digital", "both"].map((item, index) => {
+              return (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              );
+            })}
           </select>
 
           {/* Upload Section */}
