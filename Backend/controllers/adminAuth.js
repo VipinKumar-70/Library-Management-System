@@ -9,7 +9,7 @@ const register = async (req, res) => {
     password: process.env.ADMIN_PASSWORD,
   };
   try {
-    const existingAdmin = await adminModel.findOne({ email });
+    const existingAdmin = await adminModel.findOne({ email: admin.email });
     if (existingAdmin) {
       return res
         .status(400)
