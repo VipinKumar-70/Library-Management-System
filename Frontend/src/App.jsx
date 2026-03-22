@@ -14,6 +14,7 @@ import PageNotFound from "./Pages/PageNotFound";
 import AdminLogin from "./Pages/AdminLogin";
 import ProtectAdmin from "./components/ProtectAdmin";
 import ManageBooks from "./features/admin/components/ManageBooks ";
+import AdminStudents from "./features/admin/components/AdminStudents";
 
 function App() {
   return (
@@ -53,6 +54,15 @@ function App() {
                 element={
                   <ProtectAdmin>
                     <ManageBooks />
+                  </ProtectAdmin>
+                }
+              />
+
+              <Route
+                path="/admin/students"
+                element={
+                  <ProtectAdmin>
+                    <AdminStudents />
                   </ProtectAdmin>
                 }
               />
