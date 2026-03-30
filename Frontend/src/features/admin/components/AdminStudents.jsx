@@ -4,33 +4,15 @@ import {
   deleteStudent,
   updateStudent,
 } from "../../../api/index";
+
+import { approveBorrowApi } from "../../../api/book/borrowApi";
 import EditStudentModal from "./EditStudentModal";
-
-const StudentCard = ({ student }) => {
-  return (
-    <div className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition">
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
-          {student.username?.charAt(0).toUpperCase()}
-        </div>
-
-        <div>
-          <h3 className="font-semibold">{student.username}</h3>
-          <p className="text-sm text-gray-500">{student.email}</p>
-        </div>
-      </div>
-
-      <span className="text-sm text-gray-600">{student.course}</span>
-    </div>
-  );
-};
 
 const AdminStudents = () => {
   const [students, setStudents] = useState([]);
   const [filtered, setFiltered] = useState([]);
-  const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
-
+  const [expandedRow, setExpandedRow] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   useEffect(() => {
@@ -41,7 +23,6 @@ const AdminStudents = () => {
     const data = await getAllStudents();
     setStudents(data.students || []);
     setFiltered(data.students || []);
-    setTotal(data.totalStudents || 0);
   };
 
   // 🔍 Search
@@ -55,138 +36,149 @@ const AdminStudents = () => {
   // 🗑 Delete
   const handleDelete = async (id) => {
     if (!confirm("Delete this student?")) return;
-
     await deleteStudent(id);
     fetchStudents();
   };
 
-  // 🚫 Block / Unblock
-  const handleBlockToggle = async (student) => {
-    await updateStudent(student._id, {
-      isBlocked: !student.isBlocked,
-    });
-
+  // ✅ Approve Request
+  const handleApprove = async (borrowId) => {
+    await approveBorrowApi(borrowId);
     fetchStudents();
-  };
-
-  // 🟢 Status Badge
-  const getStatusBadge = (student) => {
-    if (student.isBlocked) {
-      return (
-        <span className="bg-red-100 text-red-600 px-3 py-1 text-xs rounded-full">
-          Blocked
-        </span>
-      );
-    }
-
-    return (
-      <span className="bg-green-100 text-green-600 px-3 py-1 text-xs rounded-full">
-        Active
-      </span>
-    );
   };
 
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">Students</h1>
-          <p className="text-gray-500">
-            Manage and view all registered students
-          </p>
-        </div>
+      <div className="flex justify-between mb-6">
+        <h1 className="text-2xl font-bold">Students</h1>
 
-        <div className="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow">
-          Total: {total}
-        </div>
-      </div>
-
-      {/* Search */}
-      <div className="mb-6">
         <input
           type="text"
-          placeholder="Search students..."
+          placeholder="Search..."
+          className="px-4 py-2 border rounded-lg"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full md:w-1/3 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
         />
       </div>
 
       {/* Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="w-full text-left">
-          <thead className="bg-gray-100 text-gray-600 text-sm">
+          <thead className="bg-gray-100 text-sm">
             <tr>
               <th className="p-4">Student</th>
               <th className="p-4">Email</th>
               <th className="p-4">Course</th>
-              <th className="p-4">School</th>
-              <th className="p-4">Enrollment</th>
-              <th className="p-4">Joined</th>
               <th className="p-4">Borrowed</th>
+              <th className="p-4">Pending</th>
               <th className="p-4">Status</th>
-              <th className="p-4 text-center">Actions</th>
+              <th className="p-4">Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {filtered.map((s) => (
-              <tr key={s._id} className="border-t hover:bg-gray-50">
-                <td className="p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-indigo-500 text-white flex items-center justify-center">
-                    {s.username?.charAt(0).toUpperCase()}
-                  </div>
-                  {s.username}
-                </td>
+              <>
+                <tr key={s._id} className="border-t hover:bg-gray-50">
+                  <td className="p-4 flex items-center gap-3">
+                    <div className="w-10 h-10 bg-indigo-500 text-white rounded-full flex items-center justify-center">
+                      {s.username?.charAt(0)}
+                    </div>
+                    {s.username}
+                  </td>
 
-                <td className="p-4">{s.email}</td>
-                <td className="p-4">{s.course}</td>
-                <td className="p-4">{s.school}</td>
-                <td className="p-4">{s.enrollment}</td>
+                  <td className="p-4">{s.email}</td>
+                  <td className="p-4">{s.course}</td>
 
-                <td className="p-4 text-sm text-gray-500">
-                  {new Date(s.createdAt).toLocaleDateString()}
-                </td>
+                  {/* 🔥 Real Data */}
+                  <td className="p-4 text-blue-600">{s.borrowCount}</td>
+                  <td className="p-4 text-yellow-600">{s.pendingCount}</td>
 
-                <td className="p-4">
-                  <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs">
-                    {s.borrowedBooks?.length || 0}
-                  </span>
-                </td>
+                  <td className="p-4">
+                    {s.isBlocked ? (
+                      <span className="text-red-500">Blocked</span>
+                    ) : (
+                      <span className="text-green-500">Active</span>
+                    )}
+                  </td>
 
-                <td className="p-4">{getStatusBadge(s)}</td>
+                  <td className="p-4 space-x-2">
+                    <button
+                      onClick={() =>
+                        setExpandedRow(expandedRow === s._id ? null : s._id)
+                      }
+                      className="text-indigo-600"
+                    >
+                      View
+                    </button>
 
-                {/* Actions */}
-                <td className="p-4 text-center space-x-3">
-                  <button
-                    onClick={() => setSelectedStudent(s)}
-                    className="text-yellow-500"
-                  >
-                    Edit
-                  </button>
+                    <button
+                      onClick={() => setSelectedStudent(s)}
+                      className="text-yellow-500"
+                    >
+                      Edit
+                    </button>
 
-                  <button
-                    onClick={() => handleDelete(s._id)}
-                    className="text-red-500"
-                  >
-                    Delete
-                  </button>
+                    <button
+                      onClick={() => handleDelete(s._id)}
+                      className="text-red-500"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
 
-                  <button
-                    onClick={() => handleBlockToggle(s)}
-                    className="text-purple-500"
-                  >
-                    {s.isBlocked ? "Unblock" : "Block"}
-                  </button>
-                </td>
-              </tr>
+                {/* 🔥 EXPANDED ROW (REQUESTS) */}
+                {expandedRow === s._id && (
+                  <tr className="bg-gray-50">
+                    <td colSpan="7" className="p-4">
+                      <h3 className="font-semibold mb-2">Requests</h3>
+
+                      {s.borrows.length === 0 ? (
+                        <p className="text-gray-400">No requests</p>
+                      ) : (
+                        s.borrows.map((b) => (
+                          <div
+                            key={b._id}
+                            className="flex justify-between items-center border-b py-2"
+                          >
+                            <span>{b.book.title}</span>
+
+                            <div className="flex items-center gap-3">
+                              <span
+                                className={`text-xs px-2 py-1 rounded ${
+                                  b.status === "pending"
+                                    ? "bg-yellow-100 text-yellow-600"
+                                    : b.status === "approved"
+                                      ? "bg-green-100 text-green-600"
+                                      : "bg-gray-200"
+                                }`}
+                              >
+                                {b.status}
+                              </span>
+
+                              {b.status === "pending" && (
+                                <button
+                                  onClick={() => handleApprove(b._id)}
+                                  className="bg-indigo-600 text-white px-2 py-1 rounded text-xs"
+                                >
+                                  Approve
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </td>
+                  </tr>
+                )}
+              </>
             ))}
           </tbody>
         </table>
 
         {filtered.length === 0 && (
-          <div className="p-6 text-center text-gray-500">No students found</div>
+          <p className="p-6 text-center text-gray-400">No students found</p>
         )}
       </div>
 

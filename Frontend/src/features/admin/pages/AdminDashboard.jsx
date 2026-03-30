@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ManageBooks from "../components/ManageBooks ";
 import AdminStudents from "../components/AdminStudents";
 import { useAdminAuth } from "../../../context/adminAuthContext";
 import { logoutAdmin } from "../../../api/admin/authAdmin";
 import { useNavigate } from "react-router";
+import { getAllStudents, fetchBooksApi } from "../../../api/index";
+import BookRequest from "../components/BookRequest";
+import {
+  getAdminStatsApi,
+  getAllBorrowsApi,
+  approveBorrowApi,
+} from "../../../api/book/borrowApi";
 
 const DashboardCard = ({ title, value }) => (
   <div className="bg-white rounded-lg shadow p-6">
@@ -13,10 +20,44 @@ const DashboardCard = ({ title, value }) => (
 );
 
 const AdminDashboard = () => {
+  const [students, setStudents] = useState([]);
+  const [books, setBooks] = useState([]);
+  const [stats, setStats] = useState({
+    totalBorrowed: 0,
+    totalRequests: 0,
+  });
+  const [borrows, setBorrows] = useState([]);
+
   const { admin, loading, setAdmin } = useAdminAuth();
   const navigate = useNavigate();
-
   const [activeView, setActiveView] = useState("dashboard");
+
+  const fetchData = async () => {
+    try {
+      const [studentRes, bookRes, statsRes, borrowRes] = await Promise.all([
+        getAllStudents(),
+        fetchBooksApi(),
+        getAdminStatsApi(),
+        getAllBorrowsApi(),
+      ]);
+
+      setStudents(studentRes.students);
+      setBooks(bookRes.books);
+      setStats(statsRes);
+      setBorrows(borrowRes);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleApprove = async (id) => {
+    await approveBorrowApi(id);
+    fetchData();
+  };
 
   const handleLogout = async () => {
     await logoutAdmin();
@@ -38,7 +79,7 @@ const AdminDashboard = () => {
             { name: "Dashboard", key: "dashboard" },
             { name: "Manage Books", key: "books" },
             { name: "Students", key: "students" },
-            { name: "Analytics", key: "Analytics" },
+            { name: "Requests", key: "requests" },
           ].map((item) => (
             <button
               key={item.key}
@@ -65,24 +106,27 @@ const AdminDashboard = () => {
         </div>
       </aside>
 
-      {/* RIGHT PANEL */}
+      {/* Main */}
       <main className="flex-1 p-6">
+        {/* DASHBOARD */}
         {activeView === "dashboard" && (
           <>
             <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
             <div className="grid grid-cols-4 gap-4">
-              <DashboardCard title="Total Books" value={0} />
-              <DashboardCard title="Total Students" value={0} />
-              <DashboardCard title="Borrowed" value={0} />
-              <DashboardCard title="Requests" value={0} />
+              <DashboardCard title="Total Books" value={books.length} />
+              <DashboardCard title="Total Students" value={students.length} />
+              <DashboardCard title="Borrowed" value={stats.totalBorrowed} />
+              <DashboardCard title="Requests" value={stats.totalRequests} />
             </div>
           </>
         )}
 
         {activeView === "books" && <ManageBooks />}
-
         {activeView === "students" && <AdminStudents />}
+        {activeView === "requests" && (
+          <BookRequest borrows={borrows} onApprove={handleApprove} />
+        )}
       </main>
     </div>
   );
