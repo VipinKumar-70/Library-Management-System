@@ -8,8 +8,8 @@ import Topbar from "../components/Topbar";
 
 import DashboardSection from "../components/DashboardSection";
 import BooksSection from "../components/BooksSection";
-import BorrowedSection from "../components/BorrowedSection";
-import FinesSection from "../components/FinesSection";
+
+
 import ProfileSection from "../components/ProfileSection";
 
 const StudentDashboard = () => {
@@ -43,8 +43,8 @@ const StudentDashboard = () => {
         <main className="p-6">
           {active === "dashboard" && <DashboardSection />}
           {active === "books" && <BooksSection />}
-          {active === "borrowed" && <BorrowedSection />}
-          {active === "fines" && <FinesSection />}
+          
+
           {active === "profile" && <ProfileSection user={user} />}
         </main>
       </div>

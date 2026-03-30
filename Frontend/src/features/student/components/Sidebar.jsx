@@ -25,8 +25,8 @@ const Sidebar = ({ open, setOpen, active, setActive, handleLogout }) => {
       <nav className="p-4 space-y-2">
         <MenuItem label="Dashboard" active={active} setActive={setActive} />
         <MenuItem label="Books" active={active} setActive={setActive} />
-        <MenuItem label="Borrowed" active={active} setActive={setActive} />
-        <MenuItem label="Fines" active={active} setActive={setActive} />
+        
+
         <MenuItem label="Profile" active={active} setActive={setActive} />
 
         <div className="pt-10">
