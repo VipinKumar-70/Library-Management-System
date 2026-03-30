@@ -3,6 +3,7 @@ const router = express.Router();
 const { register, login, logout } = require("../controllers/adminAuth");
 const userModel = require("../Models/User");
 const protectAdminRoute = require("../Middleware/AdminMiddleware");
+const Borrow = require("../Models/Borrow");
 
 router.get("/register", register); // after creating admin delete this route in production
 
@@ -13,18 +14,36 @@ router.post("/logout", logout);
 router.get("/students", protectAdminRoute, async (req, res) => {
   try {
     const students = await userModel
-      .find() // all users = students
+      .find()
       .select("-password")
       .sort({ createdAt: -1 });
 
-    const totalStudents = await userModel.countDocuments();
+    const enrichedStudents = await Promise.all(
+      students.map(async (student) => {
+        const borrows = await Borrow.find({ user: student._id }).populate(
+          "book",
+        );
+
+        return {
+          ...student.toObject(),
+
+          // 🔥 NEW DATA
+          borrowCount: borrows.filter((b) => b.status === "approved").length,
+          pendingCount: borrows.filter((b) => b.status === "pending").length,
+          returnedCount: borrows.filter((b) => b.status === "returned").length,
+
+          borrows, // 🔥 full borrow history (very important)
+        };
+      }),
+    );
 
     res.status(200).json({
       success: true,
-      totalStudents,
-      students,
+      totalStudents: enrichedStudents.length,
+      students: enrichedStudents,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 });

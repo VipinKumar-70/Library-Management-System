@@ -9,7 +9,7 @@ const adminRoute = require("./routes/adminRoute");
 const profile = require("./routes/StudentProfile");
 const uploadbook = require("./routes/BookRoute");
 const cookieParser = require("cookie-parser");
-
+const borrowRoute = require("./routes/borrowRoute");
 const app = express();
 
 app.use(express.json());
@@ -31,6 +31,7 @@ const startServer = async () => {
     app.use("/admin", adminRoute);
     app.use("/admin", adminProfile);
     app.use("/books", uploadbook);
+    app.use("/borrow", borrowRoute);
 
     app.get("/api/test", (req, res) => {
       res.json({ message: "Backend connected" });
