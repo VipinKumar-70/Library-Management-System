@@ -7,6 +7,8 @@ const {
   deleteBook,
   updateBook,
 } = require("../controllers/BookController");
+const uploadCSV = require("../Middleware/uploadCSV");
+const { bulkUploadBooks } = require("../controllers/BulkUpload");
 
 router.post("/upload", uploadBooks, addBook);
 
@@ -14,6 +16,8 @@ router.get("/booklist", getBooks);
 
 router.get("/booklist", getBooks);
 router.delete("/:id", deleteBook);
-router.put("/:id", updateBook);
+router.put("/:id", uploadBooks, updateBook);
+
+router.post("/bulk-upload", uploadCSV, bulkUploadBooks);
 
 module.exports = router;
