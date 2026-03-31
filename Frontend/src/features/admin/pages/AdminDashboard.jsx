@@ -12,6 +12,8 @@ import {
   approveBorrowApi,
 } from "../../../api/book/borrowApi";
 
+import BulkUpload from "../components/BulkUpload";
+
 const DashboardCard = ({ title, value }) => (
   <div className="bg-white rounded-lg shadow p-6">
     <div className="text-3xl font-bold">{value}</div>
@@ -79,7 +81,9 @@ const AdminDashboard = () => {
             { name: "Dashboard", key: "dashboard" },
             { name: "Manage Books", key: "books" },
             { name: "Students", key: "students" },
+            { name: "Analyze", key: "Analyze" },
             { name: "Requests", key: "requests" },
+            { name: "Bulk Upload", key: "Bulk Upload" },
           ].map((item) => (
             <button
               key={item.key}
@@ -124,6 +128,7 @@ const AdminDashboard = () => {
 
         {activeView === "books" && <ManageBooks />}
         {activeView === "students" && <AdminStudents />}
+        {activeView === "Bulk Upload" && <BulkUpload />}
         {activeView === "requests" && (
           <BookRequest borrows={borrows} onApprove={handleApprove} />
         )}
