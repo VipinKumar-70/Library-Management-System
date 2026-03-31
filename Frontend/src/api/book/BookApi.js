@@ -34,16 +34,26 @@ export const deleteBookApi = async (id) => {
   return res.json();
 };
 
-export const updateBookApi = async (id, data) => {
+export const updateBookApi = async (id, formData) => {
   const res = await fetch(`${BASE_URL}/books/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
+    body: formData,
     credentials: "include",
   });
 
   if (!res.ok) throw new Error("Update failed");
+  return res.json();
+};
+
+export const bulkUploadBooksApi = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${BASE_URL}/books/bulk-upload`, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+
   return res.json();
 };
