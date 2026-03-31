@@ -91,10 +91,22 @@ const deleteBook = async (req, res) => {
 
 const updateBook = async (req, res) => {
   try {
+    const updateData = { ...req.body };
+
+    // ✅ Cover Image
+    if (req.files?.coverImage) {
+      updateData.coverImage = `/uploads/bookCover/${req.files.coverImage[0].filename}`;
+    }
+
+    // ✅ PDF
+    if (req.files?.bookFile) {
+      updateData.pdfUrl = `/uploads/books/${req.files.bookFile[0].filename}`;
+    }
+
     const updated = await bookModel.findByIdAndUpdate(
       req.params.id,
-      req.body,
-      { new: true }
+      updateData,
+      { new: true },
     );
 
     res.json(updated);
@@ -103,4 +115,4 @@ const updateBook = async (req, res) => {
   }
 };
 
-module.exports = { addBook, getBooks, deleteBook,updateBook };
+module.exports = { addBook, getBooks, deleteBook, updateBook };
