@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import AddBookModal from "../components/AddBookModal";
+import AddBookModal from "./AddBookModal";
 import { useBook } from "../../../context/BookContext";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;

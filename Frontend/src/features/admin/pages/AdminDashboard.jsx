@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ManageBooks from "../components/ManageBooks ";
+import ManageBooks from "../components/ManageBooks";
 import AdminStudents from "../components/AdminStudents";
 import { useAdminAuth } from "../../../context/AdminAuthContext";
 import { logoutAdmin } from "../../../api/admin/authAdmin";
