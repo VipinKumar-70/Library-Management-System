@@ -13,7 +13,7 @@ import { BookProvider } from "./context/BookContext";
 import PageNotFound from "./Pages/PageNotFound";
 import AdminLogin from "./Pages/AdminLogin";
 import ProtectAdmin from "./components/ProtectAdmin";
-import ManageBooks from "./features/admin/components/ManageBooks ";
+import ManageBooks from "./features/admin/components/ManageBooks";
 import AdminStudents from "./features/admin/components/AdminStudents";
 import BulkUpload from "./features/admin/components/BulkUpload";
 
@@ -69,7 +69,7 @@ function App() {
               />
 
               <Route
-                path="/admin/students"
+                path="/admin/bulk-upload"
                 element={
                   <ProtectAdmin>
                     <BulkUpload />

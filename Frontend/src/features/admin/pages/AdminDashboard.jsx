@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ManageBooks from "../components/ManageBooks ";
 import AdminStudents from "../components/AdminStudents";
-import { useAdminAuth } from "../../../context/adminAuthContext";
+import { useAdminAuth } from "../../../context/AdminAuthContext";
 import { logoutAdmin } from "../../../api/admin/authAdmin";
 import { useNavigate } from "react-router";
 import { getAllStudents, fetchBooksApi } from "../../../api/index";

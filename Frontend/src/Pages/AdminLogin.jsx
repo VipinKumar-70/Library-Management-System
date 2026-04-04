@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginAdmin } from "../api/index";
-import { useAdminAuth } from "../context/adminAuthContext";
+import { useAdminAuth } from "../context/AdminAuthContext";
 
 const AdminLogin = () => {
   const navigate = useNavigate();

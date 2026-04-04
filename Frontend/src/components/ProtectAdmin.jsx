@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAdminAuth } from "../context/adminAuthContext";
+import { useAdminAuth } from "../context/AdminAuthContext";
 
 const ProtectAdmin = ({ children }) => {
   const { admin, loading } = useAdminAuth();
