@@ -8,7 +8,7 @@ import StudentDashboard from "./features/student/pages/StudentDashboard";
 import AdminDashboard from "./features/admin/pages/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
-import { AdminAuthProvider } from "./context/adminAuthContext";
+import { AdminAuthProvider } from "./context/AdminAuthContext";
 import { BookProvider } from "./context/BookContext";
 import PageNotFound from "./Pages/PageNotFound";
 import AdminLogin from "./Pages/AdminLogin";
