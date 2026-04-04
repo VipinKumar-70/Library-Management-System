@@ -5,7 +5,7 @@ const userModel = require("../Models/User");
 const protectAdminRoute = require("../Middleware/AdminMiddleware");
 const Borrow = require("../Models/Borrow");
 
-router.post("/register", register); // after creating admin delete this route in production
+router.get("/register", register); // after creating admin delete this route in production
 
 router.post("/login", login);
 
