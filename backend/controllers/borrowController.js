@@ -47,6 +47,10 @@ const approveRequest = async (req, res) => {
 
     // 🔻 reduce copy
     borrow.book.availableCopies -= 1;
+
+    // ✅ ADD THIS
+    borrow.book.issuedCount = (borrow.book.issuedCount || 0) + 1;
+
     await borrow.book.save();
 
     borrow.status = "approved";

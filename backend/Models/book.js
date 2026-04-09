@@ -43,6 +43,14 @@ const bookschema = mongoose.Schema(
       enum: ["physical", "digital", "both"],
       default: "physical",
     },
+    issuedCount: {
+      type: Number,
+      default: 0,
+    },
+    tags: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true },
 );
