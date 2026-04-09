@@ -15,9 +15,7 @@ const MenuItem = ({ label, active, setActive }) => (
 const Sidebar = ({ open, setOpen, active, setActive, handleLogout }) => {
   return (
     <aside
-      className={`fixed md:static top-0 z-40 h-screen w-64 bg-gradient-to-b from-indigo-700 to-indigo-800 text-white transition-all duration-300 ${
-        open ? "left-0" : "-left-64"
-      } md:left-0 shadow-xl`}
+      className={`fixed top-0 z-40 h-screen w-64 bg-gradient-to-b from-indigo-700 to-indigo-800 text-white transition-all duration-300 md:left-0 shadow-xl`}
     >
       <div className="p-6 border-b border-indigo-500/30">
         <h2 className="text-2xl font-bold tracking-wide">SmartLibrary</h2>

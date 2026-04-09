@@ -9,7 +9,6 @@ import Topbar from "../components/Topbar";
 import DashboardSection from "../components/DashboardSection";
 import BooksSection from "../components/BooksSection";
 
-
 import ProfileSection from "../components/ProfileSection";
 
 const StudentDashboard = () => {
@@ -28,28 +27,26 @@ const StudentDashboard = () => {
   if (loading) return <div className="p-6">Loading...</div>;
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="bg-gray-100 min-h-screen">
+      {/* Sidebar */}
       <Sidebar
         open={open}
-        setOpen={setOpen}
         active={active}
         setActive={setActive}
         handleLogout={handleLogout}
       />
 
-      <div className="flex-1">
+      {/* Main Content */}
+      <div className="md:ml-64 flex flex-col min-h-screen">
         <Topbar user={user} active={active} setOpen={setOpen} />
 
-        <main className="p-6">
+        <main className="flex-1 p-6 overflow-y-auto">
           {active === "dashboard" && <DashboardSection />}
           {active === "books" && <BooksSection />}
-          
-
           {active === "profile" && <ProfileSection user={user} />}
         </main>
       </div>
     </div>
   );
 };
-
 export default StudentDashboard;
