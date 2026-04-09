@@ -57,3 +57,11 @@ export const bulkUploadBooksApi = async (file) => {
 
   return res.json();
 };
+
+export const getRecommendationsApi = async () => {
+  const res = await fetch(`${BASE_URL}/api/recommend`, {
+    credentials: "include",
+  });
+
+  return res.json();
+};

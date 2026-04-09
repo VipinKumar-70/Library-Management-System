@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
 import StatsCard from "./StatsCard";
-import { getDashboardApi, returnBookApi } from "../../../api/book/borrowApi";
+import {
+  getDashboardApi,
+  returnBookApi,
+  requestBookApi,
+} from "../../../api/book/borrowApi";
+import { getRecommendationsApi } from "../../../api/book/bookApi";
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const DashboardSection = () => {
   const [data, setData] = useState(null);
+  const [recommendations, setRecommendations] = useState([]);
+  const [recType, setRecType] = useState("");
+  const [loadingRec, setLoadingRec] = useState(true);
 
   const fetchDashboard = async () => {
     try {
@@ -14,8 +24,22 @@ const DashboardSection = () => {
     }
   };
 
+  const fetchRecommendations = async () => {
+    try {
+      setLoadingRec(true);
+      const res = await getRecommendationsApi();
+      setRecommendations(res.data);
+      setRecType(res.type);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingRec(false);
+    }
+  };
+
   useEffect(() => {
     fetchDashboard();
+    fetchRecommendations();
   }, []);
 
   if (!data)
@@ -29,7 +53,7 @@ const DashboardSection = () => {
 
   return (
     <div className="space-y-8">
-      {/* Stats */}
+      {/* ================= Stats ================= */}
       <div className="grid md:grid-cols-4 gap-6">
         <StatsCard
           title="Pending"
@@ -53,7 +77,87 @@ const DashboardSection = () => {
         />
       </div>
 
-      {/* My Books */}
+      {/* ================= Recommendations ================= */}
+      <div className="bg-white/80 backdrop-blur-md p-5 rounded-2xl shadow-sm border border-gray-100">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-800">
+            {recType === "trending"
+              ? "🔥 Trending Books"
+              : "🎯 Recommended For You"}
+          </h2>
+
+          {recType === "personalized" && (
+            <span className="text-xs text-gray-500">
+              Based on your activity
+            </span>
+          )}
+        </div>
+
+        {/* Content */}
+        {loadingRec ? (
+          <p className="text-gray-500 text-sm">Loading recommendations...</p>
+        ) : recommendations.length === 0 ? (
+          <p className="text-gray-500 text-sm">No recommendations available</p>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {recommendations.map((book) => (
+              <div
+                key={book._id}
+                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-100 group"
+              >
+                {/* Image */}
+                <div className="h-52 overflow-hidden">
+                  <img
+                    src={
+                      book.coverImage
+                        ? `${BASE_URL}${book.coverImage}`
+                        : "https://via.placeholder.com/150"
+                    }
+                    alt={book.title}
+                    className="w-full h-full object-fit group-hover:scale-105 transition-all duration-300"
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="p-3 space-y-1">
+                  <h3 className="text-sm font-semibold text-gray-800 line-clamp-1">
+                    {book.title}
+                  </h3>
+
+                  <p className="text-xs text-gray-500 line-clamp-1">
+                    {book.author}
+                  </p>
+
+                  <p className="text-[11px] text-gray-500 line-clamp-2">
+                    {book.description}
+                  </p>
+
+                  {/* Bottom */}
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="text-[10px] px-2 py-0.5 bg-indigo-100 text-indigo-600 rounded">
+                      {book.category}
+                    </span>
+
+                    <button
+                      onClick={async () => {
+                        await requestBookApi(book._id);
+                        fetchDashboard();
+                        fetchRecommendations();
+                      }}
+                      className="text-[10px] px-2 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 active:scale-95 transition-all"
+                    >
+                      Request
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ================= My Books ================= */}
       <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-gray-100">
         <h2 className="text-xl font-semibold mb-5 text-gray-800">
           📚 My Books
@@ -70,7 +174,7 @@ const DashboardSection = () => {
             return (
               <div
                 key={b._id}
-                className="flex justify-between items-center p-4 rounded-xl bg-white border border-gray-100 hover:shadow-md transition-all duration-200"
+                className="flex justify-between items-center p-4 rounded-xl bg-white border border-gray-100 hover:shadow-md transition-all"
               >
                 <div>
                   <p className="font-semibold text-gray-800">{b.book.title}</p>
@@ -101,6 +205,7 @@ const DashboardSection = () => {
                       onClick={async () => {
                         await returnBookApi(b._id);
                         fetchDashboard();
+                        fetchRecommendations();
                       }}
                       className="text-sm px-4 py-1.5 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 active:scale-95 transition-all"
                     >
@@ -114,7 +219,7 @@ const DashboardSection = () => {
         </div>
       </div>
 
-      {/* Fines */}
+      {/* ================= Fines ================= */}
       <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-gray-100">
         <h2 className="text-xl font-semibold mb-5 text-gray-800">⚠️ Fines</h2>
 
@@ -124,86 +229,11 @@ const DashboardSection = () => {
             .map((b) => (
               <div
                 key={b._id}
-                className="p-5 rounded-2xl bg-white border border-gray-100 hover:shadow-md transition-all duration-200 space-y-4"
+                className="p-4 rounded-xl border border-gray-100 bg-white hover:shadow-md transition-all"
               >
-                {/* Top Row */}
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-semibold text-gray-800 text-lg">
-                      {b.book.title}
-                    </h3>
+                <h3 className="font-semibold text-gray-800">{b.book.title}</h3>
 
-                    <p className="text-sm text-gray-500 mt-1">
-                      by {b.book.author || "Unknown Author"}
-                    </p>
-                  </div>
-
-                  <span
-                    className={`text-xs px-3 py-1 rounded-full font-medium capitalize ${
-                      b.status === "pending"
-                        ? "bg-yellow-100 text-yellow-700"
-                        : b.status === "approved"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-200 text-gray-600"
-                    }`}
-                  >
-                    {b.status}
-                  </span>
-                </div>
-
-                {/* Description */}
-                <p className="text-sm text-gray-600 line-clamp-2">
-                  {b.book.description || "No description available"}
-                </p>
-
-                {/* Dates */}
-                <div className="flex flex-wrap gap-4 text-xs text-gray-500">
-                  <span>
-                    📅 Borrowed: {new Date(b.createdAt).toLocaleDateString()}
-                  </span>
-
-                  <span>
-                    ⏰ Due: {new Date(b.dueDate).toLocaleDateString()}
-                  </span>
-                </div>
-
-                {/* Progress / Time */}
-                {b.status === "approved" && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">
-                      {diffDays < 0
-                        ? `⚠️ ${Math.abs(diffDays)} days overdue`
-                        : `⏳ ${diffDays} days left`}
-                    </p>
-
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className={`h-2 rounded-full ${
-                          diffDays < 2
-                            ? "bg-red-500 w-5/6"
-                            : diffDays < 5
-                              ? "bg-yellow-400 w-2/3"
-                              : "bg-green-500 w-1/3"
-                        }`}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Action */}
-                {b.status === "approved" && (
-                  <div className="flex justify-end">
-                    <button
-                      onClick={async () => {
-                        await returnBookApi(b._id);
-                        fetchDashboard();
-                      }}
-                      className="text-sm px-4 py-1.5 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 active:scale-95 transition-all"
-                    >
-                      Return Book
-                    </button>
-                  </div>
-                )}
+                <p className="text-sm text-gray-500">Fine: ₹{b.fine}</p>
               </div>
             ))}
         </div>
