@@ -33,6 +33,7 @@ const startServer = async () => {
     app.use("/books", uploadbook);
     app.use("/borrow", borrowRoute);
     app.use("/api/recommend", require("./routes/recommendRoutes"));
+    app.use("/api/analytics", require("./routes/analyticsRoute"));
     
 
     app.get("/api/test", (req, res) => {
