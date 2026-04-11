@@ -5,7 +5,7 @@ import {
   updateStudent,
 } from "../../../api/index";
 
-import { approveBorrowApi } from "../../../api/book/borrowApi";
+import { approveBorrowApi } from "../../../api/index";
 import EditStudentModal from "./EditStudentModal";
 
 const AdminStudents = () => {
