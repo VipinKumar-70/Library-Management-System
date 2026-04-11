@@ -4,8 +4,9 @@ import {
   getDashboardApi,
   returnBookApi,
   requestBookApi,
-} from "../../../api/book/borrowApi";
-import { getRecommendationsApi } from "../../../api/book/bookApi";
+  getRecommendationsApi,
+} from "../../../api/index";
+
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 

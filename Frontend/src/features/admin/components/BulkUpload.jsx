@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { bulkUploadBooksApi } from "../../../api/book/BookApi";
+import { bulkUploadBooksApi } from "../../../api/index";
 
 const BulkUpload = () => {
   const [file, setFile] = useState(null);
