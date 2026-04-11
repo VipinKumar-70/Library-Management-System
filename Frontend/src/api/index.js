@@ -12,9 +12,23 @@ import {
   uploadBookApi,
   deleteBookApi,
   updateBookApi,
+  bulkUploadBooksApi,
+  getRecommendationsApi,
 } from "./book/BookApi";
+import {
+  requestBookApi,
+  getDashboardApi,
+  returnBookApi,
+  getAdminStatsApi,
+  getAllBorrowsApi,
+  approveBorrowApi,
+  rejectBorrowApi,
+} from "./book/borrowApi";
+
+import { getAnalyticsApi } from "./book/analyticsApi";
 
 export {
+  // User/Student
   registerUser,
   loginUser,
   logoutUser,
@@ -22,11 +36,25 @@ export {
   getAllStudents,
   updateStudent,
   deleteStudent,
-  adminProfile,
+  // admin
   loginAdmin,
   logoutAdmin,
+  adminProfile,
+  // Book
   fetchBooksApi,
   uploadBookApi,
   deleteBookApi,
   updateBookApi,
+  bulkUploadBooksApi,
+  getRecommendationsApi,
+  // Borrow
+  requestBookApi,
+  getDashboardApi,
+  returnBookApi,
+  getAdminStatsApi,
+  getAllBorrowsApi,
+  approveBorrowApi,
+  rejectBorrowApi,
+  // Analytics
+  getAnalyticsApi,
 };
