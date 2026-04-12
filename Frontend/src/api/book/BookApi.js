@@ -63,5 +63,9 @@ export const getRecommendationsApi = async () => {
     credentials: "include",
   });
 
+  if (!res.ok) {
+    throw new Error("Failed to fetch recommendations");
+  }
+
   return res.json();
 };
